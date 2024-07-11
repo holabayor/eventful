@@ -27,7 +27,7 @@ export class UserRepository implements ICreate<IUser> {
   async findByField(fieldName: string, value: string): Promise<IUser | null> {
     try {
       console.log(typeof fieldName, typeof 'email');
-      const user = await User.findOne({ email: value });
+      const user = await User.findOne({ [fieldName]: value });
       logger.info(`User retrieved by field: ${fieldName}, ${value}`);
       return user;
     } catch (error: any) {
