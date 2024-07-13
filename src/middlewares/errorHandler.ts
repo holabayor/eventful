@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import logger from '../config/logger';
 
 const errorHandler = (
   err: any,
@@ -6,6 +7,12 @@ const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  logger.error('HTTP Error', {
+    message: err.message,
+    stack: err.stack,
+    statusCode: err.statusCode,
+    isOperational: err.isOperational,
+  });
   const isDevelopment = process.env.NODE_ENV === 'development';
 
   const response = {

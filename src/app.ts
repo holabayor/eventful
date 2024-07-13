@@ -1,6 +1,6 @@
 import express, { Express } from 'express';
-import morgan from 'morgan';
-import { requestLogger } from './middlewares/requestLogger';
+// import morgan from 'morgan';
+import { httpLogger, requestLogger } from './middlewares/requestLogger';
 import errorHandler from './middlewares/errorHandler';
 import router from './routers';
 
@@ -16,8 +16,8 @@ class Application {
 
   private initializeMiddlewares() {
     this.app.use(express.json());
-    this.app.use(morgan('dev'));
-    this.app.use(requestLogger);
+    this.app.use(httpLogger);
+    // this.app.use(requestLogger);
   }
 
   private initializeRoutes() {

@@ -1,9 +1,11 @@
 import logger from '../config/logger';
 import { ConflictError, DatabaseError } from '../exceptions/customError';
 import { IUser, User } from '../models/user';
-import { ICreate } from './IRepositiory';
+import { ICreate, IDelete, IRead, IUpdate } from './IRepositiory';
 
-export class UserRepository implements ICreate<IUser> {
+export class UserRepository
+  implements ICreate<IUser>, IRead<IUser>, IUpdate<IUser>, IDelete
+{
   async create(data: {
     name: string;
     email: string;
@@ -26,7 +28,6 @@ export class UserRepository implements ICreate<IUser> {
 
   async findByField(fieldName: string, value: string): Promise<IUser | null> {
     try {
-      console.log(typeof fieldName, typeof 'email');
       const user = await User.findOne({ [fieldName]: value });
       logger.info(`User retrieved by field: ${fieldName}, ${value}`);
       return user;
@@ -69,5 +70,11 @@ export class UserRepository implements ICreate<IUser> {
       });
       throw new DatabaseError(`Database Error:, ${error.message}`);
     }
+  }
+
+  async delete(id: string): Promise<boolean> {
+    const result = User.findByIdAndDelete(id);
+    logger.info('User deleted', { userId: id });
+    return !!result;
   }
 }

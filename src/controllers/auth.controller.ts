@@ -24,7 +24,7 @@ export class AuthController {
 
   public login = asyncWrapper(async (req: Request, res: Response) => {
     validateSchema(loginSchema, req.body);
-    // try {
+
     const { email, password } = req.body;
     const { token, user } = await this.authService.login(email, password);
     res.status(200).json({
@@ -33,8 +33,5 @@ export class AuthController {
       message: 'User logged in successfully',
       user: user,
     });
-    // } catch (error) {
-    //   console.log(error);
-    // }
   });
 }

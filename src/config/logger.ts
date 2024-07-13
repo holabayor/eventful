@@ -1,12 +1,23 @@
 import { createLogger, format, transports } from 'winston';
 
-const { combine, timestamp, errors, splat, printf, colorize, simple } = format;
+const { combine, timestamp, errors, splat, printf, colorize } = format;
+
+const logFormat = printf(({ level, message, timestamp, stack }) => {
+  return ` ${level}: [${timestamp}] ${stack || message}`;
+});
 
 const logger = createLogger({
-  level: 'info',
+  levels: {
+    error: 0,
+    warn: 1,
+    info: 2,
+    http: 3,
+    debug: 4,
+  },
   format: combine(
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    printf((info) => `${info.level}:  [${info.timestamp}] "${info.message}"`)
+    errors({ stack: true }),
+    logFormat
   ),
   transports: [
     new transports.File({
@@ -21,7 +32,7 @@ const logger = createLogger({
 if (process.env.NODE_ENV !== 'production') {
   logger.add(
     new transports.Console({
-      format: combine(colorize(), simple()),
+      format: combine(colorize(), logFormat),
     })
   );
 }

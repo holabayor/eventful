@@ -18,3 +18,16 @@ export const requestLogger = (
   });
   next();
 };
+
+import morgan from 'morgan';
+
+const stream = {
+  write: (message: string) => logger.http(message.trim()),
+};
+
+export const httpLogger = morgan(
+  ':method :url :status :res[content-length] - :response-time ms',
+  { stream }
+);
+
+// export httpLogger;
